@@ -3,9 +3,9 @@
 #include <string>
 #include <sstream>
 #include <format.hpp>
+#include <vector>
 
-#include <openssl/sha.h>
-
+#define SHA256_DIGEST_LENGTH 32
 #define INTEGER_256_BITS 256
 #define INTEGER_256_BYTES INTEGER_256_BITS / 8
 #define INTEGER_256_INTEGERS INTEGER_256_BYTES / sizeof(int)
@@ -15,7 +15,7 @@ namespace uva
 	namespace binary
 	{
         struct binary_uint256_t {
-        private:
+        public:
         union v {
             uint8_t bytes[SHA256_DIGEST_LENGTH] { 0 };
             int integers[INTEGER_256_INTEGERS];
@@ -58,6 +58,15 @@ namespace uva
 		std::string to_hex_string(const uint8_t* __values, size_t __count);
 
         binary_uint256_t sha256(const char* data, const size_t& len);
+        binary_uint256_t hmac_sha256(const std::string& s, const std::string& key);
+        binary_uint256_t hmac_sha256(const char* data, const size_t& len, const std::string& key);
+
+        std::string encode_octet_sequence(const std::string& str);
+        std::string decode_octet_sequence(const std::string& str);
+
+        std::string encode_base64(std::string_view sv);
+        std::string encode_base64(const char* begin, size_t len);
+        std::vector<uint8_t> decode_base64(const std::string& input);
 	};
 };
 
