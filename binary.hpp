@@ -64,8 +64,9 @@ namespace uva
         std::string encode_octet_sequence(const std::string& str);
         std::string decode_octet_sequence(const std::string& str);
 
-        std::string encode_base64(std::string_view sv);
-        std::string encode_base64(const char* begin, size_t len);
+        std::string encode_base64(binary_uint256_t b, bool padding = true);
+        std::string encode_base64(std::string_view sv, bool padding = true);
+        std::string encode_base64(const char* begin, size_t len, bool padding = true);
         std::vector<uint8_t> decode_base64(const std::string& input);
 	};
 };

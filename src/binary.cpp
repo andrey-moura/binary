@@ -155,12 +155,17 @@ std::string uva::binary::decode_octet_sequence(const std::string &str)
     return std::string();
 }
 
-std::string uva::binary::encode_base64(std::string_view sv)
+std::string uva::binary::encode_base64(binary_uint256_t b, bool padding)
 {
-    return encode_base64(sv.data(), sv.size());
+    return encode_base64((const char*)&b, sizeof(binary_uint256_t), padding);
 }
 
-std::string uva::binary::encode_base64(const char *begin, size_t len)
+std::string uva::binary::encode_base64(std::string_view sv, bool padding)
+{
+    return encode_base64(sv.data(), sv.size(), padding);
+}
+
+std::string uva::binary::encode_base64(const char *begin, size_t len, bool padding)
 {
     size_t output_len = (4*((len+2)/3)); //+1 for the terminating null that EVP_EncodeBlock adds on;
     std::string output;
@@ -169,6 +174,12 @@ std::string uva::binary::encode_base64(const char *begin, size_t len)
     size_t actual_len = EVP_EncodeBlock((unsigned char*)output.data(), (unsigned char*)begin, len);
     if(actual_len != output_len) {
         throw std::runtime_error("failed to enconde base64: the buffer was smaller");
+    }
+
+    if(!padding) {
+        while(output.ends_with('=')) {
+            output.pop_back();
+        }
     }
 
     return output;
