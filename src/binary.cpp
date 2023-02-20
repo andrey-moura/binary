@@ -1,9 +1,10 @@
 #include <binary.hpp>
 
-#include <openssl/sha.h>
-#include <openssl/evp.h>
-#include <openssl/hmac.h>
-
+#ifdef UVA_OPENSSL_FOUND
+    #include <openssl/sha.h>
+    #include <openssl/evp.h>
+    #include <openssl/hmac.h>
+#endif
 #include <core.hpp>
 
 static char hexadecimal_digits[16]{ '0','1','2','3','4','5','6','7','8','9','A','B','C','D','E','F' };
@@ -105,6 +106,7 @@ std::string uva::binary::to_hex_string(const uint8_t* __values, size_t __count)
     return text;
 }
 
+#ifdef UVA_OPENSSL_FOUND
 uva::binary::binary_uint256_t uva::binary::sha256(const char* data, const size_t& len)
 {
     binary_uint256_t hash;
@@ -126,7 +128,7 @@ uva::binary::binary_uint256_t uva::binary::hmac_sha256(const char *data, const s
 
     return hash;
 }
-
+#endif
 std::string uva::binary::encode_octet_sequence(const std::string &str)
 {
     std::string buffer;
@@ -154,7 +156,7 @@ std::string uva::binary::decode_octet_sequence(const std::string &str)
 {
     return std::string();
 }
-
+#ifdef UVA_OPENSSL_FOUND
 std::string uva::binary::encode_base64(binary_uint256_t b, bool padding)
 {
     return encode_base64((const char*)&b, sizeof(binary_uint256_t), padding);
@@ -195,3 +197,4 @@ std::vector<uint8_t> uva::binary::decode_base64(const std::string &input)
     }
     return output;
 }
+#endif

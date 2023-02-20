@@ -57,10 +57,11 @@ namespace uva
          */
 		std::string to_hex_string(const uint8_t* __values, size_t __count);
 
+#ifdef UVA_OPENSSL_FOUND
         binary_uint256_t sha256(const char* data, const size_t& len);
         binary_uint256_t hmac_sha256(const std::string& s, const std::string& key);
         binary_uint256_t hmac_sha256(const char* data, const size_t& len, const std::string& key);
-
+#endif
         std::string encode_octet_sequence(const std::string& str);
         std::string decode_octet_sequence(const std::string& str);
 
