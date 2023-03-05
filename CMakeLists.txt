@@ -12,7 +12,7 @@ include_directories(${CMAKE_CURRENT_LIST_DIR})
 target_link_libraries(uva-binary Threads::Threads)
 
 if(OpenSSL)
-	target_compile_definitions(-DUVA_OPENSSL_FOUND)
+	target_compile_definitions(-D__UVA_OPENSSL_FOUND__)
 	target_link_libraries(uva-binary ${OPENSSL_LIBRARIES})
 endif()
 

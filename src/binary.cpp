@@ -1,6 +1,6 @@
 #include <binary.hpp>
 
-#ifdef UVA_OPENSSL_FOUND
+#ifdef __UVA_OPENSSL_FOUND__
     #include <openssl/sha.h>
     #include <openssl/evp.h>
     #include <openssl/hmac.h>
@@ -106,7 +106,7 @@ std::string uva::binary::to_hex_string(const uint8_t* __values, size_t __count)
     return text;
 }
 
-#ifdef UVA_OPENSSL_FOUND
+#ifdef __UVA_OPENSSL_FOUND__
 uva::binary::binary_uint256_t uva::binary::sha256(const char* data, const size_t& len)
 {
     binary_uint256_t hash;
@@ -156,7 +156,7 @@ std::string uva::binary::decode_octet_sequence(const std::string &str)
 {
     return std::string();
 }
-#ifdef UVA_OPENSSL_FOUND
+#ifdef __UVA_OPENSSL_FOUND__
 std::string uva::binary::encode_base64(binary_uint256_t b, bool padding)
 {
     return encode_base64((const char*)&b, sizeof(binary_uint256_t), padding);
