@@ -57,6 +57,8 @@ namespace uva
          */
 		std::string to_hex_string(const uint8_t* __values, size_t __count);
 
+        bool is_hex_digit(const char& c);
+
 #ifdef __UVA_OPENSSL_FOUND__
         binary_uint256_t sha256(const char* data, const size_t& len);
         binary_uint256_t hmac_sha256(const std::string& s, const std::string& key);

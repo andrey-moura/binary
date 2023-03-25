@@ -7,7 +7,8 @@
 #endif
 #include <core.hpp>
 
-static char hexadecimal_digits[16]{ '0','1','2','3','4','5','6','7','8','9','A','B','C','D','E','F' };
+static char hexadecimal_digits[16] { '0','1','2','3','4','5','6','7','8','9','A','B','C','D','E','F' };
+static std::string_view hexadecimal_digits_sv = (const char*)hexadecimal_digits;
 
 uva::binary::binary_uint256_t::binary_uint256_t(int __integer)
 {
@@ -104,6 +105,11 @@ std::string uva::binary::to_hex_string(const uint8_t* __values, size_t __count)
     }
 
     return text;
+}
+
+bool uva::binary::is_hex_digit(const char &c)
+{
+    return hexadecimal_digits_sv.find((char)toupper(c)) != std::string::npos;
 }
 
 #ifdef __UVA_OPENSSL_FOUND__
