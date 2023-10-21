@@ -4,7 +4,11 @@
     #include <openssl/sha.h>
     #include <openssl/evp.h>
     #include <openssl/hmac.h>
+    #include <openssl/bio.h>
+    #include <openssl/pem.h>
+    #include <openssl/evp.h>
 #endif
+
 #include <core.hpp>
 
 static char hexadecimal_digits[16] { '0','1','2','3','4','5','6','7','8','9','A','B','C','D','E','F' };
@@ -162,7 +166,9 @@ std::string uva::binary::decode_octet_sequence(const std::string &str)
 {
     return std::string();
 }
+
 #ifdef __UVA_OPENSSL_FOUND__
+
 std::string uva::binary::encode_base64(binary_uint256_t b, bool padding)
 {
     return encode_base64((const char*)&b, sizeof(binary_uint256_t), padding);
@@ -192,15 +198,28 @@ std::string uva::binary::encode_base64(const char *begin, size_t len, bool paddi
 
     return output;
 }
-
-std::vector<uint8_t> uva::binary::decode_base64(const std::string &input)
-{
-    size_t output_len = 3*input.size()/4;
-    std::vector<uint8_t> output;
-    size_t actual_len = EVP_DecodeBlock((unsigned char*)output.data(), (unsigned char*)input.data(), input.size());
-    if(actual_len != output_len) {
-        throw std::runtime_error("failed to enconde base64: the buffer was smaller");
-    }
-    return output;
-}
 #endif
+
+uva::binary::key::key(const std::string &__original_key)
+{
+    BIO* bio = BIO_new( BIO_s_mem() );
+
+    if(!bio) {
+        throw std::runtime_error("BIO_new failed.");
+    }
+
+    if(BIO_write( bio, original_key.c_str(), original_key.size()) != original_key.size()) {
+        throw std::runtime_error("BIO_write failed.");
+    }
+
+    EVP_PKEY* pkey = 0;
+    PEM_read_bio_PUBKEY( bio, &pkey, 0, 0 );
+
+    if(!pkey) {
+        throw std::runtime_error("PEM_read_bio_PUBKEY failed.");
+    }
+
+    if(!BIO_free(bio)) {
+        throw std::runtime_error("BIO_free failed.");
+    }
+}
