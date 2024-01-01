@@ -36,7 +36,14 @@ namespace uva
         };
         struct key {
             public:
+                key(void* __key);
                 key(const std::string& __original_key);
+                key(key && __key);
+                ~key();
+            public:
+                static key from_certificate(const std::string& __original_certificate);
+            public:
+                key(key& ) = delete;
             private:
                 void* internal_key;
             public:

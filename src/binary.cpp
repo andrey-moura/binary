@@ -7,6 +7,8 @@
     #include <openssl/bio.h>
     #include <openssl/pem.h>
     #include <openssl/evp.h>
+    #include <openssl/applink.c>
+
 #endif
 
 #include <core.hpp>
@@ -200,6 +202,11 @@ std::string uva::binary::encode_base64(const char *begin, size_t len, bool paddi
 }
 #endif
 
+uva::binary::key::key(void *__key)
+    : internal_key(__key)
+{
+}
+
 uva::binary::key::key(const std::string &__original_key)
 {
     BIO* bio = BIO_new( BIO_s_mem() );
@@ -221,5 +228,62 @@ uva::binary::key::key(const std::string &__original_key)
 
     if(!BIO_free(bio)) {
         throw std::runtime_error("BIO_free failed.");
+    }
+
+    internal_key = (void*)pkey;
+}
+
+uva::binary::key::key(key &&__key)
+    : internal_key(__key.internal_key)
+{
+    __key.internal_key = nullptr;
+}
+
+uva::binary::key uva::binary::key::from_certificate(const std::string &__original_certificate)
+{
+    OpenSSL_add_all_algorithms();
+
+  const char* cert_file = "C:\\Program Files\\OpenSSL-Win64\\bin\\cert.pem";
+ FILE* cert_file_ptr = fopen(cert_file, "r");
+    if (!cert_file_ptr) {
+        std::cerr << "Erro ao abrir o arquivo de certificado." << std::endl;
+        return 0;
+    }
+
+    EVP_PKEY* public_key = PEM_read_PUBKEY(cert_file_ptr, NULL, NULL, NULL);
+    fclose(cert_file_ptr);
+
+//    // BIO* bio = BIO_new_mem_buf((void*)original_certificate.data(), original_certificate.size());
+//    BIO* bio = BIO_new(BIO_s_mem());
+
+//     if(!bio) {
+//         throw std::runtime_error("BIO_new_mem_buf failed.");
+//     }
+
+//         BIO_puts(bio, original_certificate.c_str());
+
+//     X509* cert = PEM_read_bio_X509(bio, nullptr, 0, NULL);
+    
+//     if(cert == NULL) {
+//         throw std::runtime_error("Erro ao carregar o certificado PEM");
+//     }
+
+//     BIO_free(bio);
+
+//     EVP_PKEY* pkey = X509_get_pubkey(cert);
+
+//     X509_free(cert);
+
+//     if (!pkey) {
+//         throw std::runtime_error("Erro ao extrair a chave pública do certificado");
+//     }
+
+//     uva::binary::key key((void*)pkey);
+}
+
+uva::binary::key::~key()
+{
+    if(internal_key) {
+        EVP_PKEY_free((EVP_PKEY*)internal_key);
     }
 }
