@@ -11,7 +11,7 @@
 
 #endif
 
-#include <core.hpp>
+#include <uva.hpp>
 
 static char hexadecimal_digits[16] { '0','1','2','3','4','5','6','7','8','9','A','B','C','D','E','F' };
 static std::string_view hexadecimal_digits_sv = (const char*)hexadecimal_digits;
