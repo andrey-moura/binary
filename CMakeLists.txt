@@ -19,5 +19,7 @@ endif()
 
 #Tests
 
-#Create tests for parent project
-cspec_configure("uva-binary" ${CMAKE_CURRENT_LIST_DIR} "uva-binary;uva-string")
+if(TARGET cspec)
+	#Create tests for parent project
+	cspec_configure("uva-binary" ${CMAKE_CURRENT_LIST_DIR} "uva-binary;uva-string")
+endif()
