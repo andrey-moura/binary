@@ -3,7 +3,7 @@
 #include <faker.hpp>
 
 #include <string.hpp>
-#include <binary.hpp>
+#include <uva/binary.hpp>
 #include <cspec.hpp>
 
 using namespace uva::binary;
