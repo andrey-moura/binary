@@ -1,5 +1,8 @@
 #include <uva/binary.hpp>
 
+//#include <stdexcept>
+#include <iostream>
+
 #ifdef __UVA_OPENSSL_FOUND__
     #include <openssl/sha.h>
     #include <openssl/evp.h>
@@ -7,14 +10,15 @@
     #include <openssl/bio.h>
     #include <openssl/pem.h>
     #include <openssl/evp.h>
-    #include <openssl/applink.c>
-
+    //#include <openssl/applink.c>
 #endif
 
-#include <uva.hpp>
+//#include <uva.hpp>
 
 static char hexadecimal_digits[16] { '0','1','2','3','4','5','6','7','8','9','A','B','C','D','E','F' };
 static std::string_view hexadecimal_digits_sv = (const char*)hexadecimal_digits;
+
+#ifdef __UVA_OPENSSL_FOUND__
 
 uva::binary::binary_uint256_t::binary_uint256_t(int __integer)
 {
@@ -75,6 +79,7 @@ bool uva::binary::binary_uint256_t::operator==(const uva::binary::binary_uint256
 
     return true;
 }
+#endif
 
 uint8_t uva::binary::nibble_from_hex_string(const char& __nibble_str)
 {
@@ -89,7 +94,9 @@ uint8_t uva::binary::nibble_from_hex_string(const char& __nibble_str)
         return (__nibble_str - 'A') + 0xA;
     }
 
-    throw std::runtime_error("invalid input");
+#ifdef __EXCEPTIONS
+    //throw std::runtime_error("invalid input");
+#endif
 }
 
 uint8_t uva::binary::byte_from_hex_string(const char* __str)
@@ -102,12 +109,12 @@ std::string uva::binary::to_hex_string(const uint8_t* __values, size_t __count)
     std::string text;
     text.reserve(__count*2);
 
-    for(size_t i = 0; i < __count; ++i)
+    for(int i = __count-1; i >= 0; --i)
     {
         text.push_back(hexadecimal_digits[(__values[0] & 0xF0) >> 4]);
         text.push_back(hexadecimal_digits[__values[0] & 0x0F]);
 
-        ++__values;
+        --__values;
     }
 
     return text;
@@ -159,7 +166,7 @@ std::string uva::binary::encode_octet_sequence(const std::string &str)
     buffer.pop_back();
     buffer.push_back(']');
 
-    UVA_CHECK_RESERVED_BUFFER(buffer, reserved_size);
+    //UVA_CHECK_RESERVED_BUFFER(buffer, reserved_size);
 
     return buffer;
 }
@@ -200,7 +207,6 @@ std::string uva::binary::encode_base64(const char *begin, size_t len, bool paddi
 
     return output;
 }
-#endif
 
 uva::binary::key::key(void *__key)
     : internal_key(__key)
@@ -287,3 +293,4 @@ uva::binary::key::~key()
         EVP_PKEY_free((EVP_PKEY*)internal_key);
     }
 }
+#endif

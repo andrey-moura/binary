@@ -1,19 +1,22 @@
 #pragma once
 
 #include <string>
-#include <sstream>
-#include <format.hpp>
 #include <vector>
 
-#define SHA256_DIGEST_LENGTH 32
-#define INTEGER_256_BITS 256
-#define INTEGER_256_BYTES INTEGER_256_BITS / 8
-#define INTEGER_256_INTEGERS INTEGER_256_BYTES / sizeof(int)
+#ifdef __UVA_OPENSSL_FOUND__
+#   include <format.hpp>
+
+#   define SHA256_DIGEST_LENGTH 32
+#   define INTEGER_256_BITS 256
+#   define INTEGER_256_BYTES INTEGER_256_BITS / 8
+#   define INTEGER_256_INTEGERS INTEGER_256_BYTES / sizeof(int)
+#endif
 
 namespace uva
 {
 	namespace binary
 	{
+#ifdef __UVA_OPENSSL_FOUND__
         struct binary_uint256_t {
             public:
             union v {
@@ -49,6 +52,7 @@ namespace uva
             public:
                 std::string original_key;
         };
+#endif
         /**
          *  @brief Converts a string representation of a hex 4 bits nibble to a 8 bits byte
          *  @param  __nibble_str A char in the range of '0' to 'F', case insensitive
@@ -71,6 +75,17 @@ namespace uva
          */
 		std::string to_hex_string(const uint8_t* __values, size_t __count);
 
+        /**
+         *  @brief Converts an integerto a string representation in the hexadecimal format, in little endian (the memmory block is reversed).
+         *  @param  __integer  A memmory block, each byte to be represented with a char in the range of '0' to 'F'
+         *  @return         The human readable value of @a __integer in the hexadecimal format.
+         */
+        template<typename Integer>
+		std::string to_hex_string(const Integer& __integer)
+        {
+            return to_hex_string((const uint8_t*)&__integer, sizeof(__integer));
+        }
+
         bool is_hex_digit(const char& c);
 
 #ifdef __UVA_OPENSSL_FOUND__
@@ -80,15 +95,16 @@ namespace uva
 #endif
         std::string encode_octet_sequence(const std::string& str);
         std::string decode_octet_sequence(const std::string& str);
-
+#ifdef __UVA_OPENSSL_FOUND__
         std::string encode_base64(binary_uint256_t b, bool padding = true);
+#endif
         std::string encode_base64(std::string_view sv, bool padding = true);
         std::string encode_base64(const char* begin, size_t len, bool padding = true);
 
         //now, we done something cool. Based on https://stackoverflow.com/a/41094722, I brought the fastest encoder and the fastest decoder here
 
         template<typename container>
-        void decode_base64(std::string_view input, container& __output, bool url)
+        void decode_base64(std::string_view input, container& __output, bool url = false)
         {
             static const int base64_indexes[256] = {
                 0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
@@ -158,7 +174,7 @@ namespace uva
         }
 	};
 };
-
+#ifdef __UVA_OPENSSL_FOUND__
 #ifdef USE_FMT_FORMT
     template<>
     struct std::formatter<uva::binary::binary_uint256_t>
@@ -182,5 +198,5 @@ namespace uva
     {
         return std::format_to(ctx.out(), "{}", v.to_s());
     }
-
+#endif
 #endif
