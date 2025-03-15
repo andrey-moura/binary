@@ -4,7 +4,7 @@
 #include <vector>
 
 #ifdef __UVA_OPENSSL_FOUND__
-#   include <format.hpp>
+#   include <uva/format.hpp>
 
 #   define SHA256_DIGEST_LENGTH 32
 #   define INTEGER_256_BITS 256

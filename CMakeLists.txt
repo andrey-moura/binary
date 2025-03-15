@@ -3,7 +3,7 @@ cmake_minimum_required(VERSION 3.16)
 
 project(uva-binary)
 
-add_library(uva-binary
+add_library(uva-binary OBJECT
 	${CMAKE_CURRENT_LIST_DIR}/src/binary.cpp
 )
 
