@@ -16,5 +16,6 @@ find_package(OpenSSL)
 if(DEFINED OPENSSL_FOUND)
 	target_compile_definitions(uva-binary PRIVATE __UVA_OPENSSL_FOUND__)
 	include_directories(${OPENSSL_INCLUDE_DIR})
-	target_link_libraries(uva-binary ${OPENSSL_LIBRARIES})
+
+	set(ANDY_BINARY_LIBRARIES ${OPENSSL_LIBRARIES})
 endif()
