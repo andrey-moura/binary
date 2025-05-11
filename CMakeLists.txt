@@ -13,7 +13,7 @@ target_link_libraries(uva-binary Threads::Threads)
 
 find_package(OpenSSL)
 
-if(DEFINED OPENSSL_FOUND)
+if(OPENSSL_FOUND)
 	target_compile_definitions(uva-binary PRIVATE __UVA_OPENSSL_FOUND__)
 	include_directories(${OPENSSL_INCLUDE_DIR})
 
