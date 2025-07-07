@@ -5,14 +5,23 @@
 
 uint8_t andy::binary::nibble_from_hex_string(const char& __nibble_str)
 {
-#ifdef __EXCEPTIONS
-    throw std::runtime_error("not implemented");
-#endif
+    if(__nibble_str >= '0' && __nibble_str <= '9')
+    {
+        return __nibble_str - '0';
+    }
+    else if(__nibble_str >= 'A' && __nibble_str <= 'F')
+    {
+        return __nibble_str - 'A' + 10;
+    }
+    else if(__nibble_str >= 'a' && __nibble_str <= 'f')
+    {
+        return __nibble_str - 'a' + 10;
+    }
 }
 
 uint8_t andy::binary::byte_from_hex_string(const char* __str)
 {
-    throw std::runtime_error("not implemented");
+    return (nibble_from_hex_string(__str[0]) << 4) | nibble_from_hex_string(__str[1]);
 }
 
 std::string andy::binary::to_hex_string(const uint8_t* values, size_t count)
