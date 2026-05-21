@@ -4,7 +4,7 @@
 
 #include "andy/binary.hpp"
 
-uint8_t andy::binary::nibble_from_hex_string(const char& __nibble_str)
+uint8_t lavi::binary::nibble_from_hex_string(const char& __nibble_str)
 {
     if(__nibble_str >= '0' && __nibble_str <= '9')
     {
@@ -20,12 +20,12 @@ uint8_t andy::binary::nibble_from_hex_string(const char& __nibble_str)
     }
 }
 
-uint8_t andy::binary::byte_from_hex_string(const char* __str)
+uint8_t lavi::binary::byte_from_hex_string(const char* __str)
 {
     return (nibble_from_hex_string(__str[0]) << 4) | nibble_from_hex_string(__str[1]);
 }
 
-std::string andy::binary::to_hex_string(const uint8_t* values, size_t count)
+std::string lavi::binary::to_hex_string(const uint8_t* values, size_t count)
 {
     static const char* hexadecimal_digits = "0123456789ABCDEF";
 
@@ -49,7 +49,7 @@ std::string andy::binary::to_hex_string(const uint8_t* values, size_t count)
     return text;
 }
 
-bool andy::binary::is_hex_digit(const char &c)
+bool lavi::binary::is_hex_digit(const char &c)
 {
     throw std::runtime_error("not implemented");
 }
